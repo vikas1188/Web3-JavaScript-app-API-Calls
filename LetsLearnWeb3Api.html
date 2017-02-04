@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Testing with Web3 JavaScript Ðapp API</title>
+	<script src="http://rawgit.com/ethereum/web3.js/0.16.0/dist/web3.min.js"></script>
+	<script
+	  src="https://code.jquery.com/jquery-3.1.1.min.js"
+	  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+	  crossorigin="anonymous"></script>
+	 <script>
+		window.addEventListener('load', function() {
+
+		  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+		  if (typeof web3 !== 'undefined') {
+		    // Use Mist/MetaMask's provider
+		    web3 = new Web3(web3.currentProvider);
+		  } else {
+		    console.log('No web3? You should consider trying MetaMask!')
+		    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+		    web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/jusRhRm9lPsVCXFLnnNk"));
+		  }
+	      var abi =[{"constant":false,"inputs":[{"name":"_amount","type":"uint256"},{"name":"_doctor","type":"address"},{"name":"_appointmentId","type":"string"}],"name":"setAppointment","outputs":[],"type":"function","payable":true},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"appointments","outputs":[{"name":"isAppointmentFixed","type":"bool"},{"name":"isServiceProvided","type":"bool"},{"name":"discountedFee","type":"uint256"},{"name":"appointmentId","type":"string"}],"type":"function","payable":true},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"type":"function","payable":true},{"constant":false,"inputs":[{"name":"_patient","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_serviceName","type":"string"},{"name":"_appointmentId","type":"string"}],"name":"serviceProvided","outputs":[],"type":"function","payable":true},{"inputs":[],"type":"constructor","payable":true},{"anonymous":false,"inputs":[{"indexed":true,"name":"_doctor","type":"address"},{"indexed":true,"name":"_patient","type":"address"},{"indexed":false,"name":"_msg","type":"string"},{"indexed":false,"name":"_appointmentId","type":"string"},{"indexed":false,"name":"_now","type":"uint256"},{"indexed":false,"name":"_amount","type":"uint256"},{"indexed":false,"name":"_isPaymentSuccessful","type":"bool"}],"name":"AppointmentAdded","type":"event","payable":true},{"anonymous":false,"inputs":[{"indexed":true,"name":"_doctor","type":"address"},{"indexed":true,"name":"_patient","type":"address"},{"indexed":false,"name":"_serviceName","type":"string"},{"indexed":false,"name":"_msg","type":"string"},{"indexed":false,"name":"_appointmentId","type":"string"},{"indexed":false,"name":"_now","type":"uint256"},{"indexed":false,"name":"_amount","type":"uint256"},{"indexed":false,"name":"_isServiceProvided","type":"bool"}],"name":"ServiceProvided","type":"event","payable":true},{"type":"fallback","payable":true}];
+	      var MyContract = web3.eth.contract(abi);
+	      var myContractInstance = MyContract.at('0x84c7761966903ac6612850f13ef76fa982a4f9db');
+		  // Now you can start your app & access web3 freely:
+	      startApp(web3,abi,MyContract,myContractInstance);
+		})
+  </script>
+  </head>
+
+  <body>
+  
+
+	
+
+<div>
+        <h4>1. web3 version Api</h4>
+         <h3 id='version'></h3>
+        <button onclick='version()'>Get Version!</button>
+</div>
+
+<hr/>
+<div>
+        <h4>2. web3.version.node</h4>
+         <h3 id='node'></h3>
+        <button onclick='node()'>Get node!</button>
+</div>
+
+<hr/>
+<div>
+        <h4>3. web3.version.ethereum</h4>
+         <h3 id='ethereum'></h3>
+        <button onclick='ethereum()'>Get ethereum!</button>
+</div>
+
+<hr/>
+<div>
+        <h4>4. web3.version.whisper</h4>
+         <h3 id='whisper'></h3>
+        <button onclick='whisper()'>Get whisper!</button>
+</div>
+
+<hr/>
+<div>
+        <h4>5. web3.isConnected</h4>
+         <h3 id='Connected'></h3>
+         <script>
+         function check(){
+         if(!web3.isConnected()) {
+console.log("true");
+} else {
+console.log("false");
+}
+         }
+         </script>
+        <button onclick='isConnected()'>Get isConnected!</button>
+        <button onclick='check()'>Get isConnected!</button>
+</div>
+
+<hr/>
+<div>
+        <h4>6. web3.currentProvider</h4>
+         <h3 id='currentProvider'></h3>
+        <button onclick='currentProvider()'>Get currentProvider!</button>
+</div>
+
+<hr/>
+<div>
+        <h4>7. web3.sha3</h4>
+         <div>
+          Get me SHA3 of this string : <input id='SHA3_1'>
+        </div>
+        <button onclick='sha3()'>Get sha3!</button>
+        <h4>Keccak256 sha3 is :</h4>
+         <h3 id='sha3'></h3>
+</div>
+
+<hr/>
+<div>
+        <h4>8. web3.toHex</h4>
+         <div>
+          Get me Hex of this string : <input id='Hex_1'>
+        </div>
+        <button onclick='toHex()'>Get Hex!</button>
+        <h4>Hex is :</h4>
+         <h3 id='toHex'></h3>
+</div>
+
+<hr/>
+<div>
+        <h4>9. web3.toAscii</h4>
+         <div>
+          Get me String from this Hex : <input id='toAscii_1'>
+        </div>
+        <button onclick='toAscii()'>Get Ascii!</button>
+        <h4>Ascii of the entered Hex String is :</h4>
+         <h3 id='toAscii'></h3>
+</div>
+
+
+<hr/>
+<div>
+        <h4>10. web3.fromAscii</h4>
+         <div>
+          Get me Hex of this string using fromAscii : <input id='fromAscii_1'>
+        </div>
+        <button onclick='fromAscii()'>Get Hex using fromAscii!</button>
+        <h4> Hex of the entered Ascii String is :</h4>
+         <h3 id='fromAscii'></h3>
+</div>
+
+
+<hr/>
+<div>
+        <h4>11. web3.toDecimal</h4>
+         <div>
+          Get me Decimal of this Hex string : <input id='toDecimal_1'>
+        </div>
+        <button onclick='toDecimal()'>Get Decimal!</button>
+        <h4> Decimal of the entered Hex String is :</h4>
+         <h3 id='toDecimal'></h3>
+</div>
+
+
+<hr/>
+<div>
+        <h4>12. web3.fromDecimal</h4>
+         <div>
+          Get me Hex of this string using fromDecimal : <input id='fromDecimal_1'>
+        </div>
+        <button onclick='fromDecimal()'>Get Hex!</button>
+        <h4> Hex of the entered Hex String is :</h4>
+         <h3 id='fromDecimal'></h3>
+</div>
+
+
+<hr/>
+<div>
+        <h4>13. web3.fromWei</h4>
+         <div>
+          Enter value in Wei to convert it to ether: <input id='fromWei_1'>
+        </div>
+        <button onclick='fromWei()'>Convert it in Ether!</button>
+        <h4> Currency in Ether is :</h4>
+         <h3 id='fromWei'></h3>
+</div>
+
+
+<hr/>
+<div>
+        <h4>14. web3.toWei</h4>
+         <div>
+          Enter value in Ether to convert it to Wei: <input id='toWei_1'>
+        </div>
+        <button onclick='toWei()'>Get wei!</button>
+        <h4> Currency in Wei is :</h4>
+         <h3 id='toWei'></h3>
+</div>
+
+
+<hr/>
+<div>
+        <h4>15. web3.toBigNumber</h4>
+         <div>
+          Enter value to convert it to big no: <input id='toBigNumber_1'>
+        </div>
+        <button onclick='toBigNumber()'>Get BigNumber!</button>
+        <h4> Big No is :</h4>
+         <h3 id='toBigNumber'></h3>
+</div>
+
+
+
+<hr/>
+<div>
+        <h4>16. web3.net.listening</h4>
+         <div>
+          node is actively listening for network connections or not?  <h3 id='listening'></h3>
+        </div>
+        <button onclick='listening()'>listening or not ?</button>
+</div>
+
+
+<hr/>
+<div>
+        <h4>17. web3.net.peerCount</h4>
+         <div>
+          Total peers : <h3 id='peerCount'></h3>
+        </div>
+        <button onclick='peerCount()'>Get peerCount!</button>
+</div>
+
+
+<hr/>
+<div>
+        <h4>18. web3.eth.defaultAccount</h4>
+         <div>
+          Default Account : <h3 id='defaultAccount'></h3>
+        </div>
+        <button onclick='defaultAccount()'>Get Default Account!</button>
+</div>
+
+
+<hr/>
+<div>
+        <h4>19. web3.eth.defaultBlock</h4>
+         <div>
+          Default Block : <h3 id='defaultBlock'></h3>
+        </div>
+        <button onclick='defaultBlock()'>Get default Block!</button>
+</div>
+
+
+
+<hr/>
+<div>
+        <h4>20. web3.eth.coinbase</h4>
+         <div>
+          Coinbase Account : <h3 id='coinbase'></h3>
+        </div>
+        <button onclick='coinbase()'>Get coinbase!</button>
+</div>
+
+
+
+<hr/>
+<div>
+        <h4>21. web3.eth.mining</h4>
+         <div>
+          mining or not ? : <h3 id='mining'></h3>
+        </div>
+        <button onclick='mining()'>Get mining or not ?</button>
+</div>
+
+
+
+<hr/>
+<div>
+        <h4>22. web3.eth.hashrate</h4>
+         <div>
+          Current hashrate? : <h3 id='hashrate'></h3>
+        </div>
+        <button onclick='hashrate()'>Get Current hashrate!</button>
+</div>
+
+
+<hr/>
+<div>
+        <h4>23. web3.eth.getGasPrice</h4>
+         <div>
+          Current getGasPrice? : <h3 id='getGasPrice'></h3>
+        </div>
+        <button onclick='getGasPrice()'>Get Current getGasPrice!</button>
+</div>
+
+
+
+<hr/>
+<div>
+        <h4>24. web3.eth.accounts</h4>
+         <div>
+          Total accounts : <h3 id='accounts'></h3>
+        </div>
+        <button onclick='accounts()'>Get accounts!</button>
+</div>
+
+
+
+<hr/>
+<div>
+        <h4>25. web3.eth.getBlockNumber</h4>
+         <div>
+          Get BlockNumber : <h3 id='getBlockNumber'></h3>
+        </div>
+        <button onclick='getBlockNumber()'>Get BlockNumber!</button>
+</div>
+
+
+<hr/>
+<div>
+        <h4>26. web3.eth.getBalance</h4>
+         <div>
+          Get Balance : <h3 id='getBalance'></h3>
+        </div>
+        <button onclick='getBalance()'>Get Balance!</button>
+</div>
+
+
+<hr/>
+<div>
+        <h4>27. web3.eth.getCode</h4>
+         <div>
+          Enter Address to get the code of: <input id='getCode_1'>
+        </div>
+        <button onclick='getCode()'>Get Code!</button>
+         <div>
+         <p> Code : </p><h3 id='getCode'></h3>
+        </div>
+        
+</div>
+
+
+<hr/>
+<div>
+        <h4>28. web3.eth.getBlock</h4>
+         <div>
+          Enter Block no/Hash no Or the string "earliest", "latest" or "pending" to get the block: 
+          <input id='getBlock_1'>
+        </div>
+        <button onclick='getBlock()'>Get Block!</button>
+         <div>
+         <p> Block details: </p><h3 id='getBlock'></h3>
+        </div>
+        
+</div>
+
+
+
+<hr/>
+<div>
+        <h4>29. web3.eth.getBlockTransactionCount</h4>
+         <div>
+          Enter Block no/Hash no Or the string "earliest", "latest" or "pending" to get the no of txn in block: 
+          <input id='getBlockTransactionCount_1'>
+        </div>
+        <button onclick='getBlockTransactionCount()'>Get BlockTransactionCount!</button>
+         <div>
+         <p> BlockTransactionCount: </p><h3 id='getBlockTransactionCount'></h3>
+        </div>
+        
+</div>
+
+
+<hr/>
+<div>
+        <h4>30. web3.eth.getUncle</h4>
+         <div>
+          Enter Block no/Hash no Or the string "earliest", "latest" or "pending" to get the no of Uncles in block: 
+          <input id='getUncle_1'>
+        </div>
+        <button onclick='getUncle()'>Get Uncle Count!</button>
+         <div>
+         <p> Uncle Count: </p><h3 id='getUncle'></h3>
+        </div>
+        
+</div>
+
+
+
+<hr/>
+<div>
+        <h4>31. web3.eth.getTransaction</h4>
+         <div>
+          Enter TxHash to get the transaction: 
+          <input id='getTransaction_1'>
+        </div>
+        <button onclick='getTransaction()'>Get Transaction!</button>
+         <div>
+         <p> Txn details: </p><h3 id='getTransaction'></h3>
+        </div>
+        
+</div>
+
+
+
+<hr/>
+<div>
+        <h4>32. web3.eth.getTransactionFromBlock</h4>
+         <div>
+          Enter TxHash/Block no OR "earliest", "latest" or "pending": 
+          <input id='getTransactionFromBlock_1'>
+          </div>
+          <div>
+          Enter Index position : 
+          <input id='getTransactionFromBlock_2'>
+        </div>
+        <button onclick='getTransactionFromBlock()'>Get TransactionFromBlock!</button>
+         <div>
+         <p> Txn details: </p><h3 id='getTransactionFromBlock'></h3>
+        </div>
+        
+</div>
+
+
+
+
+<hr/>
+<div>
+        <h4>33. web3.eth.getTransactionReceipt</h4>
+         <div>
+          Enter TxHash: 
+          <input id='getTransactionReceipt_1'>
+          </div>
+        <button onclick='getTransactionReceipt()'>Get TransactionReceipt!</button>
+         <div>
+         <p> Txn reciept details: </p><h3 id='getTransactionReceipt'></h3>
+        </div>
+        
+</div>
+
+
+
+
+<hr/>
+<div>
+        <h4>34. web3.eth.getTransactionCount</h4>
+         <div>
+          Enter user Add/Contract Add to get the total no of transaction sent from this add: 
+          <input id='getTransactionCount_1'>
+          </div>
+        <button onclick='getTransactionCount()'>Get TransactionCount!</button>
+         <div>
+         <p> Total no of transaction sent: </p><h3 id='getTransactionCount'></h3>
+        </div>
+        
+</div>
+
+
+
+<hr/>
+<div>
+        <h4>35. web3.eth.sendTransaction</h4>
+         <div>
+          Enter user Add to send transaction from this add: 
+          <input id='sendTransaction_1'>
+          </div>
+        <button onclick='sendTransaction()'>Send transaction!</button>
+         <div>
+         <p> send Transaction: </p><h3 id='sendTransaction'></h3>
+        </div>
+        
+</div>
+
+
+
+
+<hr/>
+<div>
+        <h4>36. web3.eth.sign</h4>
+         <div>
+          Enter user Add to sent transaction from this add: 
+          <input id='sign_1'>
+          </div>
+        <button onclick='sign()'>sign Transaction!</button>
+         <div>
+         <p> signed Transaction: </p><h3 id='sign'></h3>
+        </div>
+        
+</div>
+
+
+
+
+<hr/>
+<div>
+        <h4>37. web3.eth.call</h4>
+         <div>
+          Enter user Add to sent transaction from this add: 
+          <input id='call_1'>
+          </div>
+        <button onclick='call()'>call Transaction!</button>
+         <div>
+         <p> called Transaction: </p><h3 id='call'></h3>
+        </div>
+        
+</div>
+
+
+<hr/>
+<div>
+        <h4>38. web3.eth.estimateGas</h4>
+         <div>
+          Enter user Add to sent transaction from this add and estimate the GAS: 
+          <input id='estimateGas_1'>
+          </div>
+        <button onclick='estimateGas()'>estimated Gas!</button>
+         <div>
+         <p> estimated Gas of the called Transaction: </p><h3 id='estimateGas'></h3>
+        </div>
+        
+</div>
+
+<hr/>
+<div>
+        <h4>39. web3.eth.getCompilers</h4>
+        <button onclick='getCompilers()'>Get Compilers!</button>
+         <div>
+         <p> List of Compilers: </p><h3 id='getCompilers'></h3>
+        </div>
+        
+</div>
+
+<hr/>
+
+<script type="text/javascript" src='testing.js'></script>
+  </body>
+</html>
+
+
+
